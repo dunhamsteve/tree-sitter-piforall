@@ -1,0 +1,19 @@
+module Examples where
+
+import Nat
+import BoolLib
+import Fin
+
+data Vec (A : Type) (n : Nat) : Type where
+  Nil of [n = 0]
+  Cons of [k : Nat] [n = Succ k] (A) (Vec A k)
+
+v3 : Vec Bool 3
+v3 = Cons [2] True (Cons [1] False (Cons [0] False Nil))
+
+map : [A : Type] -> [B : Type] -> [n : Nat] -> (f : A -> B) -> Vec A n -> Vec B n
+map = \[A][B][n] f vec . 
+    case vec of
+        Nil -> Nil
+        Cons [m] x xs -> Cons [m] (f x) (map [A] [B] [m] f xs)
+

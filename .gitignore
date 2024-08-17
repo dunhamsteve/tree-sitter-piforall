@@ -1,1 +1,9 @@
 node_modules
+*.swp
+# tree-sitter generate
+bindings
+src/*.json
+src/parser.c
+src/tree_sitter
+# rust output
+target

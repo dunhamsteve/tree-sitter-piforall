@@ -1,0 +1,18 @@
+; coloring spec for playground
+(comment) @comment
+(identifier) @identifier
+(bconst) @identifier ; keyword?
+(operator) @operator
+"Refl" @keyword
+"Type" @keyword
+"=" @operator
+":" @operator
+"->" @operator
+"\\" @operator
+"subst" @keyword
+
+(sigDef) @scope
+(valDef (identifier) @local) @scope
+(letExpr) @scope
+(lambda (variable (identifier) @local)) @scope
+

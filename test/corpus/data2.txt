@@ -1,0 +1,45 @@
+====
+telescope on data
+====
+module Foo where
+data Sigma (A: Type) (B : A -> Type) : Type where
+    Prod of (x:A) (B x)
+---
+
+(source_file
+  (moduleImports
+    (identifier)
+    (semi)
+    (dataDef
+      (identifier)
+      (telescope
+        (identifier)
+        (expr
+          (term))
+        (identifier)
+        (expr
+          (expr
+            (term
+              (variable
+                (identifier))))
+          (expr
+            (term))))
+      (expr
+        (term))
+      (start)
+      (semi)
+      (conDef
+        (identifier)
+        (telescope
+          (identifier)
+          (expr
+            (term
+              (variable
+                (identifier))))
+          (expr
+            (term
+              (variable
+                (identifier))
+              (variable
+                (identifier))))))
+      (end))))

@@ -1,7 +1,10 @@
 #include "tree_sitter/parser.h"
+#include "tree_sitter/alloc.h"
 #include <stdio.h>
 #include <string.h>
 
+// not available in wasm
+// lexer->log(...) is documented upstream, but is not in parser.h
 #define fprintf(...) //
 
 typedef struct {
@@ -20,9 +23,9 @@ enum TokenType {
 void ensure(State *state, uint32_t count) {
   if (state->cap < count) {
     state->cap = count * 2;
-    uint32_t *new_data = malloc(sizeof(uint32_t) * state->cap);
+    uint32_t *new_data = ts_malloc(sizeof(uint32_t) * state->cap);
     memcpy(new_data, state->data, state->len * sizeof(uint32_t));
-    free(state->data);
+    ts_free(state->data);
     state->data = new_data;
   }
 }
@@ -123,15 +126,15 @@ bool tree_sitter_piforall_external_scanner_scan(State *state, TSLexer *lexer,
 void *tree_sitter_piforall_external_scanner_create() {
   State *state = calloc(sizeof(State), 1);
   state->cap = 20;
-  state->data = malloc(sizeof(uint32_t) * state->cap);
+  state->data = ts_malloc(sizeof(uint32_t) * state->cap);
   // put the initial level at 0 and use semi at top level
   push(state, 0);
   return state;
 }
 
 void tree_sitter_piforall_external_scanner_destroy(State *state) {
-  free(state->data);
-  free(state);
+  ts_free(state->data);
+  ts_free(state);
 }
 
 unsigned tree_sitter_piforall_external_scanner_serialize(State *state,

@@ -1,0 +1,55 @@
+====
+telescope type expressions
+====
+module Foo where
+-- triggered parsing bugs
+data SillyBool : Type where
+  ImTrue  of (b : Bool) (_ : b = True)
+  ImFalse of (b: Bool)  (_ : b = False)
+---
+
+(source_file
+  (moduleImports
+    (identifier)
+    (comment)
+    (semi)
+    (dataDef
+      (identifier)
+      (expr
+        (term))
+      (start)
+      (semi)
+      (conDef
+        (identifier)
+        (telescope
+          (identifier)
+          (expr
+            (term
+              (bconst)))
+          (identifier)
+          (expr
+            (expr
+              (term
+                (variable
+                  (identifier))))
+            (expr
+              (term
+                (bconst))))))
+      (semi)
+      (conDef
+        (identifier)
+        (telescope
+          (identifier)
+          (expr
+            (term
+              (bconst)))
+          (identifier)
+          (expr
+            (expr
+              (term
+                (variable
+                  (identifier))))
+            (expr
+              (term
+                (bconst))))))
+      (end))))

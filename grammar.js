@@ -16,17 +16,17 @@ layout = ($, rule) =>
 module.exports = grammar({
   name: "piforall",
   file_types: ["pi"],
+  // this keeps "letter" from being parsed as "let ter"
   word: ($) => $.identifier,
-  contra: ($) => seq(contra, $.expr),
-  extras: ($) => [$.comment, $.ws],
-  externals: ($) => [$.start, $.semi, $.end, $.ws],
+  extras: ($) => [$.comment, $._ws],
+  externals: ($) => [$.start, $.semi, $.end, $._ws],
   rules: {
     source_file: ($) => $.moduleImports,
     comment: ($) =>
       token(
         choice(
           seq("--", /.*/),
-          // FIXME comments are {- -} and nested, this requires a scanner.
+          // FIXME comments {- -} are nested, which needs to be done in scanner.c
           seq("{-", /([^-]|-+[^}])-/, "}")
         )
       ),
@@ -45,7 +45,7 @@ module.exports = grammar({
       seq(
         "data",
         $.identifier,
-        // optional($.telescope),
+        optional($.telescope),
         ":",
         $.expr,
         "where",
@@ -64,10 +64,10 @@ module.exports = grammar({
     conDef: ($) => seq($.identifier, optional(seq("of", $.telescope))),
     telescope: ($) => repeat1(choice(
       $.identifier,
-      seq("(", $.identifier, ":", $.identifier,")"),
-      seq("(", $.identifier, ")"),
-      seq("[", $.identifier, ":", $.identifier,"]"),
-      seq("[", $.identifier, "=", $.identifier,"]"),
+      seq("(", $.identifier, ":", $.expr,")"),
+      seq("(", $.expr, ")"),
+      seq("[", $.identifier, ":", $.expr,"]"),
+      seq("[", $.identifier, "=", $.expr,"]"),
     )),
     sigDef: ($) => seq($.identifier, ":", $.expr),
     valDef: ($) => seq($.identifier, "=", $.expr),
@@ -130,6 +130,6 @@ module.exports = grammar({
     sigmaTy: ($) => seq("{", $.variable, ":", $.expr, "|", $.expr, "}"),
     variable: ($) => $.identifier,
     operator: ($) => /[!#$%&*+.,/<=>?@\\^|-]+/,
-    identifier: ($) => /[A-Za-z][\w']*/,
+    identifier: ($) => /[A-Za-z_][\w']*/,
   },
 });

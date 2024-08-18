@@ -1,5 +1,5 @@
 node_modules
-*.swp
+*.wasm
 # tree-sitter generate
 bindings
 src/*.json
